@@ -1,0 +1,10 @@
+.vscode/
+Mods/
+Modules/
+mods/
+modules/
+
+*.mod
+*.o
+*.out
+fractions
