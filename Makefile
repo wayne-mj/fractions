@@ -1,5 +1,7 @@
 FC=gfortran
 FFLAGS=-O3 -Wall -Wextra
+AR=ar
+ARARGS=r
 MODULES=fractionmodule.f90
 PROG=fractions.f90
 SRC=$(MODULES) $(PROG)
@@ -16,8 +18,7 @@ fractions: $(OBJ)
 
 lib: $(MODULES)
 	$(FC) $(FFLAGS) -c $<
-	ar r $(PROG:.f90=.a) $(MODULES:.f90=.o)
+	$(AR) $(ARARGS) $(PROG:.f90=.a) $(MODULES:.f90=.o)
 
 clean:
 	rm -f *.o *.mod $(BASE) *.a
-	
