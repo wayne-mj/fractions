@@ -14,5 +14,9 @@ all: clean fractions
 fractions: $(OBJ)
 	$(FC) $(FFLAGS) -o $@ $(OBJ)
 
+lib: $(MODULES)
+	$(FC) $(FFLAGS) -c $<
+	ar r $(PROG:.f90=.a) $(MODULES:.f90=.o)
+
 clean:
-	rm -f *.o *.mod $(BASE)
+	rm -f *.o *.mod $(BASE) *.a
