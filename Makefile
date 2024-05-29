@@ -20,3 +20,4 @@ lib: $(MODULES)
 
 clean:
 	rm -f *.o *.mod $(BASE) *.a
+	
