@@ -25,35 +25,42 @@ program fractions
 
         read(input_line, '(I10)', iostat=io_status) choice
         if (io_status ==0) then
-            if (choice == 0) then
+            !if (choice == 0) then
+            select case (choice)
+            case (0)
                 valid = .false.
                 print *, newline // "Goodbye!" // newline
             
-            else if (choice == 1) then
+            !else if (choice == 1) then
+            case (1)
                 print *, newline // "Add Fractions"
                 mychoices2 = readoptions()
                 f3 = addfraction(mychoices2%int_f1, mychoices2%int_f2)
                 print *, newline // "The result is: ", trim(int2str(f3%unit)), " " , trim(int2str(f3%numerator)), "/", trim(int2str(f3%denominator)), " ", f3%status
             
-            else if (choice == 2) then
+            !else if (choice == 2) then
+            case (2)
                 print *, newline // "Subtract Fractions"
                 mychoices2 = readoptions()
                 f3 = subfraction(mychoices2%int_f1, mychoices2%int_f2)
                 print *, newline // "The result is: ", trim(int2str(f3%unit)), " " , trim(int2str(f3%numerator)), "/", trim(int2str(f3%denominator)), " " ,f3%status
             
-            else if (choice == 3) then
+            !else if (choice == 3) then
+            case (3)    
                 print *, newline //"Multiply Fractions"
                 mychoices2 = readoptions()
                 f3 = multiplyfraction(mychoices2%int_f1, mychoices2%int_f2)
                 print *, newline // "The result is: ", trim(int2str(f3%unit)), " " , trim(int2str(f3%numerator)), "/", trim(int2str(f3%denominator)), " ", f3%status
             
-            else if (choice == 4) then
+            !else if (choice == 4) then
+            case (4)
                 print *, newline // "Divide Fractions"
                 mychoices2 = readoptions()
                 f3 = dividefraction(mychoices2%int_f1, mychoices2%int_f2)
                 print *, newline // "The result is: ", trim(int2str(f3%unit)), " " , trim(int2str(f3%numerator)), "/", trim(int2str(f3%denominator)), " ", f3%status
             
-            else if (choice == 5) then
+            !else if (choice == 5) then
+            case (5)
                 print *, newline // "Mixed Fractions"
                 write (*, '(A)', advance='no') "Enter the fraction numerator: "
                 read (*, *) num1
@@ -62,7 +69,8 @@ program fractions
                 f1 = mixedFraction(num1, den1)
                 print *, newline // "The mixed fraction is: ", trim(int2str(f1%unit)), " ", trim(int2str(f1%numerator)), "/", trim(int2str(f1%denominator))
             
-            else if (choice == 6) then
+            !else if (choice == 6) then
+            case (6)
                 print *, newline // "Simplify Fractions"
                 write (*, '(A)', advance='no') "Enter the fraction numerator: "
                 read (*, *) num1
@@ -71,9 +79,11 @@ program fractions
                 f1 = lcd(num1, den1)
                 print *, newline // "The simplifed fraction is: ", trim(int2str(f1%unit)), " ", trim(int2str(f1%numerator)), "/", trim(int2str(f1%denominator))
             
-            else
+            !else
+            case default
                 print *, "Invalid choice"
-            end if
+            !end if
+            end select
         end if
     end do
 
