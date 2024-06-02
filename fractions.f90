@@ -124,6 +124,38 @@ program fractions
         read (*, *) choices2%int_f2%denominator
     end function readoptions
     
+    function split(str, delim) result(out_array)
+        character(len=*), intent(in) :: str
+        character(len=1), intent(in) :: delim
+        character(len=100), allocatable :: out_array(:)
+        integer :: i, start, end, count, len
+
+        count = 1
+
+        do i = 1, len_trim(str)
+            if (str(i:i) == delim) then
+                count = count + 1
+            end if
+        end do
+
+        allocate(out_array(count))
+
+        start =1
+        count =0
+        do
+            end = index(str(start:), delim)
+            if (end ==0) then
+                count = count + 1
+                out_array(count) = adjustl(str(start:))
+                exit
+            else
+                count = count +1
+                out_array(count) = adjustl(str(start:start+end-2))
+                start = start + end
+            end if
+        end do
+    end function split
+
     function int2str(i) result(str)
         integer, intent(in) :: i
         character(len=10) :: str
