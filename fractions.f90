@@ -129,6 +129,6 @@ program fractions
         character(len=10) :: str
         write (str, '(I10)') i
         str = adjustl(str)
-        str = trim(str)
+        !str = trim(str)
     end function int2str
 end program fractions
