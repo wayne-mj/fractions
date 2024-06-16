@@ -8,7 +8,7 @@ SRC=$(MODULES) $(PROG)
 OBJ=${SRC:.f90=.o}
 BASE=${SRC:.f90=}
 
-all: clean fractions
+all: clean lib fractions
 
 %.o: %.f90
 	$(FC) $(FFLAGS) -o $@ -c $<

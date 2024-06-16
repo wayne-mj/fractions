@@ -266,4 +266,114 @@ module fractionmodule
         end if
     end function chkoverflow
 
+    ! This function reads the input string and returns a fraction type
+    ! If the input string is in the form of "unit numerator/denominator"
+    ! it will return the fraction type with the unit, numerator and denominator
+    ! If the input string is in the form of "numerator/denominator" then the unit
+    ! will be set to 0
+    function returnfraction(input) result(fraction)
+        character(len=*), intent(in) :: input
+        type(fractiontype) :: fraction
+        integer :: length, i, io_status, lastpos
+        character(len=100) :: temp
+
+        i = 0
+        length = 0
+        lastpos = 0
+
+        ! Initialize the fraction type to 0
+        fraction%unit = 0
+        fraction%numerator = 0
+        fraction%denominator = 0
+        fraction%status = "OK"
+
+        length = len_trim(input)
+        do i=i, length
+            if (input(i:i) == ' ') then
+                ! This is the unit part
+                temp = input(1:i)
+                lastpos = i
+                read(temp, *, iostat=io_status) fraction%unit
+                
+                if (.not. validatefraction(fraction, io_status)) then
+                    return
+                end if
+                
+                !print *, temp, fraction%unit
+            !end if
+            else if (input(i:i) == '/') then
+                if (lastpos == 0) then
+                    ! There is no unit part
+                    temp = input(1:i-1)
+                    read(temp, *, iostat=io_status) fraction%numerator
+                    
+                    if( .not. validatefraction(fraction, io_status)) then
+                        return
+                    end if
+                    
+                    !print *, temp, fraction%numerator
+                    lastpos = i
+                else
+                    ! There is a unit part
+                    temp = input(lastpos+1:i-1)
+                    lastpos = i
+                    read(temp, *, iostat=io_status) fraction%numerator
+                    
+                    if (.not. validatefraction(fraction, io_status)) then
+                        return
+                    end if
+                    
+                    !print *, temp, fraction%numerator
+                end if
+            !end if
+            else if (i == length) then
+                ! This is the denominator part
+                temp = input(lastpos+1:length)
+                read(temp, *, iostat=io_status) fraction%denominator
+                
+                if (.not. validatefraction(fraction, io_status)) then
+                    return
+                end if
+                
+                !print *, temp, fraction%denominator
+                exit
+            end if
+        end do
+    end function returnfraction
+
+    ! Moved the logic to validate the fraction to a separate function
+    ! Basically, if the io_status is not 0, then the fraction is invalid
+    function validatefraction(fraction, io_status) result(good)
+        type(fractiontype), intent(inout) :: fraction
+        integer, intent(in) :: io_status
+        logical :: good
+        
+        good = .true.
+
+        if (fraction%denominator == 0) then
+            fraction%unit = 0
+            fraction%numerator = 0
+            fraction%denominator = 0
+            fraction%status = 'Error: Division by zero'
+            good = .false.
+        else if (io_status .ne. 0) then
+            fraction%unit = 0
+            fraction%numerator = 0
+            fraction%denominator = 0
+            fraction%status = 'Error: Invalid fraction'
+            good = .false.
+        else
+            fraction%status = "OK"
+            good = .true.
+        end if        
+    end function validatefraction
+
+    ! This function converts an integer to a string
+    function int2string(input) result(str)
+        integer, intent(in) :: input
+        character(len=32) :: str
+        
+        write(str, '(I0)') input
+    end function int2string
+
 end module fractionmodule
