@@ -224,6 +224,7 @@ module fractionmodule
         end if
     end function GCDfunction
 
+    ! This function converts a fraction to a mixed number 1 & 3/4 from 7/4
     function mixedFraction (numerator, denominator) result(resultFraction)
         integer, intent(in) :: numerator, denominator
         type(fractiontype) :: resultFraction
@@ -250,6 +251,22 @@ module fractionmodule
 
     end function mixedFraction
 
+    ! Make a mixed fraction from a fraction type 7/4 to 1 & 3/4
+    function makemixedFraction(fraction) result(resultFraction)
+        type(fractiontype), intent(in) :: fraction
+        type(fractiontype) :: resultFraction
+
+        if (fraction%unit /= 0) then
+            resultFraction%numerator = (fraction%unit * fraction%denominator) + fraction%numerator
+            resultFraction%denominator = fraction%denominator
+        else
+            resultFraction%numerator = fraction%numerator
+            resultFraction%denominator = fraction%denominator
+        end if
+    end function makemixedFraction
+
+    ! This function checks for integer overflow
+    ! Using long integers to check for overflow
     function chkoverflow (testInteger) result(bool)
         integer(8), intent(in) :: testInteger
         logical :: bool
@@ -276,6 +293,7 @@ module fractionmodule
         type(fractiontype) :: fraction
         integer :: length, i, io_status, lastpos
         character(len=100) :: temp
+        ! integer :: holder
 
         i = 0
         length = 0
@@ -287,19 +305,26 @@ module fractionmodule
         fraction%denominator = 0
         fraction%status = "OK"
 
+        !print *, "DEBUG: input = ", input
+
         length = len_trim(input)
-        do i=i, length
+        do i=1, length
+
+            !print *, "DEBUG: i=", i, " input=", input(i:i)
+
             if (input(i:i) == ' ') then
                 ! This is the unit part
                 temp = input(1:i)
                 lastpos = i
                 read(temp, *, iostat=io_status) fraction%unit
+                !read(temp, *, iostat=io_status) holder
                 
                 if (.not. validatefraction(fraction, io_status)) then
                     return
                 end if
                 
-                !print *, temp, fraction%unit
+                !print *, "DEBUG: ", temp, fraction%unit
+
             !end if
             else if (input(i:i) == '/') then
                 if (lastpos == 0) then
@@ -311,7 +336,7 @@ module fractionmodule
                         return
                     end if
                     
-                    !print *, temp, fraction%numerator
+                    !print *, "DEBUG: ", temp, fraction%numerator
                     lastpos = i
                 else
                     ! There is a unit part
@@ -323,7 +348,7 @@ module fractionmodule
                         return
                     end if
                     
-                    !print *, temp, fraction%numerator
+                    !print *, "DEBUG: ", temp, fraction%numerator
                 end if
             !end if
             else if (i == length) then
@@ -335,7 +360,7 @@ module fractionmodule
                     return
                 end if
                 
-                !print *, temp, fraction%denominator
+                !print *, "DEBUG: ", temp, fraction%denominator
                 exit
             end if
         end do
@@ -350,13 +375,14 @@ module fractionmodule
         
         good = .true.
 
-        if (fraction%denominator == 0) then
-            fraction%unit = 0
-            fraction%numerator = 0
-            fraction%denominator = 0
-            fraction%status = 'Error: Division by zero'
-            good = .false.
-        else if (io_status .ne. 0) then
+        ! if (fraction%denominator == 0) then
+        !     fraction%unit = 0
+        !     fraction%numerator = 0
+        !     fraction%denominator = 0
+        !     fraction%status = 'Error: Division by zero'
+        !     good = .false.
+        ! else 
+        if (io_status .ne. 0) then
             fraction%unit = 0
             fraction%numerator = 0
             fraction%denominator = 0
@@ -367,6 +393,20 @@ module fractionmodule
             good = .true.
         end if        
     end function validatefraction
+
+    function validateresult(io_status) result(goodbad)
+        integer, intent(in) :: io_status
+        logical :: goodbad
+
+        goodbad = .true.
+
+        if (io_status .ne. 0) then
+            goodbad = .false.
+        else
+            goodbad = .true.
+        end if
+
+    end function validateresult
 
     ! This function converts an integer to a string
     function int2string(input) result(str)
