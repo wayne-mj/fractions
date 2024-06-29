@@ -274,9 +274,9 @@ module fractionmodule
         bool = .false.
 
         ! Check for integer overflow
-        if (testInteger > maxint) then
+        if (testInteger .ge. (maxint -1) ) then
             bool = .true.
-        else if (testInteger < -maxint) then
+        else if (testInteger .le. (-maxint + 1)) then
             bool = .true.
         else
             bool = .false.
