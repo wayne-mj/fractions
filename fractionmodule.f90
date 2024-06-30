@@ -15,32 +15,45 @@ module fractionmodule
     function addfraction(firstFraction, secondFraction) result(resultFraction)
         type(fractiontype), intent(in) :: firstFraction, secondFraction
         type(fractiontype) :: resultFraction
-        integer(8) :: l_num, l_denom, l_first_num, l_second_num, l_first_denom, l_second_denom
+        integer(8) :: l_num, l_denom !, l_first_num, l_second_num, l_first_denom, l_second_denom
         logical :: overflow = .false.
 
+        ! Initialize the variables
+        l_num = 0
+        l_denom = 0
+
         ! Make sure we are not dividing by zero anywhere
-        if (firstFraction%denominator == 0) then
+        ! if (firstFraction%denominator == 0) then
+        !     resultFraction%status = 'Error: Division by zero'
+        !     return
+        ! else if (secondFraction%denominator == 0) then
+        !     resultFraction%status = 'Error: Division by zero'
+        !     return
+        ! end if
+        if ((firstFraction%denominator .eq. 0) .or. (secondFraction%denominator .eq. 0)) then
             resultFraction%status = 'Error: Division by zero'
-            return
-        else if (secondFraction%denominator == 0) then
-            resultFraction%status = 'Error: Division by zero'
-            return
+             return
         end if
+
 
         ! Convert everything to long integers to handle integer overflow
         ! and perform the calculations
         if (firstFraction%denominator /= secondFraction%denominator) then
-            l_first_num = firstFraction%numerator
-            l_first_denom = firstFraction%denominator
-            l_second_num = secondFraction%numerator
-            l_second_denom = secondFraction%denominator
-            l_num = (l_first_num * l_second_denom) + (l_second_num * l_first_denom)
-            l_denom = l_first_denom * l_second_denom            
+            ! l_first_num = firstFraction%numerator
+            ! l_first_denom = firstFraction%denominator
+            ! l_second_num = secondFraction%numerator
+            ! l_second_denom = secondFraction%denominator
+            ! l_num = (l_first_num * l_second_denom) + (l_second_num * l_first_denom)
+            ! l_denom = l_first_denom * l_second_denom            
+            l_num = (int(firstFraction%numerator,8) * int(secondFraction%denominator,8)) + (int(secondFraction%numerator,8) * int(firstFraction%denominator,8))
+            l_denom = int(firstFraction%denominator,8) * int(secondFraction%denominator,8)
         else
-            l_first_num = firstFraction%numerator
-            l_second_num = secondFraction%numerator
-            l_num = l_first_num + l_second_num
-            l_denom = firstFraction%denominator
+            ! l_first_num = firstFraction%numerator
+            ! l_second_num = secondFraction%numerator
+            ! l_num = l_first_num + l_second_num
+            ! l_denom = firstFraction%denominator
+            l_num = int(firstFraction%numerator,8) + int(secondFraction%numerator,8)
+            l_denom = int(firstFraction%denominator,8)
         end if
 
         !Test for Integer Overflow
@@ -68,14 +81,22 @@ module fractionmodule
     function subfraction(firstFraction, secondFraction) result(resultFraction)
         type(fractiontype), intent(in) :: firstFraction, secondFraction
         type(fractiontype) :: resultFraction
-        integer(8) :: l_num, l_denom, l_first_num, l_second_num, l_first_denom, l_second_denom
+        integer(8) :: l_num, l_denom  !, l_first_num, l_second_num, l_first_denom, l_second_denom
         logical :: overflow = .false.
 
+        ! Initialize the variables
+        l_num = 0
+        l_denom = 0
+
         ! Make sure we are not dividing by zero anywhere
-        if (firstFraction%denominator == 0) then
-            resultFraction%status = 'Error: Division by zero'
-            return
-        else if (secondFraction%denominator == 0) then
+        ! if (firstFraction%denominator == 0) then
+        !     resultFraction%status = 'Error: Division by zero'
+        !     return
+        ! else if (secondFraction%denominator == 0) then
+        !     resultFraction%status = 'Error: Division by zero'
+        !     return
+        ! end if
+        if ((firstFraction%denominator .eq. 0) .or. (secondFraction%denominator .eq. 0)) then
             resultFraction%status = 'Error: Division by zero'
             return
         end if
@@ -83,17 +104,21 @@ module fractionmodule
         ! Convert everything to long integers to handle integer overflow
         ! and perform the calculations
         if (firstFraction%denominator /= secondFraction%denominator) then
-            l_first_num = firstFraction%numerator
-            l_first_denom = firstFraction%denominator
-            l_second_num = secondFraction%numerator
-            l_second_denom = secondFraction%denominator
-            l_num = (l_first_num * l_second_denom) - (l_second_num * l_first_denom)
-            l_denom = l_first_denom * l_second_denom            
+            ! l_first_num = firstFraction%numerator
+            ! l_first_denom = firstFraction%denominator
+            ! l_second_num = secondFraction%numerator
+            ! l_second_denom = secondFraction%denominator
+            ! l_num = (l_first_num * l_second_denom) - (l_second_num * l_first_denom)
+            ! l_denom = l_first_denom * l_second_denom            
+            l_num = (int(firstFraction%numerator,8) * int(secondFraction%denominator,8)) - (int(secondFraction%numerator,8) * int(firstFraction%denominator,8))
+            l_denom = int(firstFraction%denominator,8) * int(secondFraction%denominator,8)
         else
-            l_first_num = firstFraction%numerator
-            l_second_num = secondFraction%numerator
-            l_num = l_first_num - l_second_num
-            l_denom = firstFraction%denominator
+            ! l_first_num = firstFraction%numerator
+            ! l_second_num = secondFraction%numerator
+            ! l_num = l_first_num - l_second_num
+            ! l_denom = firstFraction%denominator
+            l_num = int(firstFraction%numerator,8) - int(secondFraction%numerator,8)
+            l_denom = int(firstFraction%denominator,8)
         end if
         
         !Test for Integer Overflow
@@ -121,24 +146,34 @@ module fractionmodule
     function multiplyfraction (firstFraction, secondFraction) result(resultFraction)
         type(fractiontype), intent(in) :: firstFraction, secondFraction
         type(fractiontype) :: resultFraction
-        integer(8) :: l_num, l_denom, l_first_num, l_second_num, l_first_denom, l_second_denom
+        integer(8) :: l_num, l_denom !, l_first_num, l_second_num, l_first_denom, l_second_denom
         logical :: overflow = .false.
 
+        ! Initialize the variables
+        l_num = 0
+        l_denom = 0
+        
         ! Make sure we are not dividing by zero anywhere
-        if (firstFraction%denominator == 0) then
-            resultFraction%status = 'Error: Division by zero'
-            return
-        else if (secondFraction%denominator == 0) then
+        ! if (firstFraction%denominator == 0) then
+        !     resultFraction%status = 'Error: Division by zero'
+        !     return
+        ! else if (secondFraction%denominator == 0) then
+        !     resultFraction%status = 'Error: Division by zero'
+        !     return
+        ! end if
+        if ((firstFraction%denominator .eq. 0) .or. (secondFraction%denominator .eq. 0)) then
             resultFraction%status = 'Error: Division by zero'
             return
         end if
 
-        l_first_num = firstFraction%numerator
-        l_first_denom = firstFraction%denominator
-        l_second_num = secondFraction%numerator
-        l_second_denom = secondFraction%denominator
-        l_num = l_first_num * l_second_num
-        l_denom = l_first_denom * l_second_denom
+        ! l_first_num = firstFraction%numerator
+        ! l_first_denom = firstFraction%denominator
+        ! l_second_num = secondFraction%numerator
+        ! l_second_denom = secondFraction%denominator
+        ! l_num = l_first_num * l_second_num
+        ! l_denom = l_first_denom * l_second_denom
+        l_num = int(firstFraction%numerator,8) * int(secondFraction%numerator,8)
+        l_denom = int(firstFraction%denominator,8) * int(secondFraction%denominator,8)
 
         !Test for Integer Overflow
         overflow = chkoverflow(l_num) .or. chkoverflow(l_denom)
