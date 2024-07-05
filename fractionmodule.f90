@@ -9,6 +9,8 @@ module fractionmodule
 
     !integer, parameter :: long = selected_int_kind(18)
     integer, parameter :: maxint = huge(0)
+    integer, parameter :: maxdenom = 100000
+    integer, parameter :: decimalplaces = 6
 
     contains
 
@@ -299,6 +301,31 @@ module fractionmodule
             resultFraction%denominator = fraction%denominator
         end if
     end function makemixedFraction
+
+    ! This function converts a decimal to a fraction
+    function decimaltofraction(decimal) result(resultFraction)
+        real, intent(in) :: decimal
+        type(fractiontype) :: resultFraction
+        integer(8) :: l_num, l_denom
+        logical :: overflow = .false.
+
+        l_num = int(nint(decimal * maxdenom),8)
+        l_denom = maxdenom
+
+        !Test for Integer Overflow
+        overflow = chkoverflow(l_num) .or. chkoverflow(l_denom)
+
+        ! If there is an overflow, set the result to 0
+        ! Otherwise, set the result to the calculated values
+        if (overflow) then
+            resultFraction%numerator = 0
+            resultFraction%denominator = 0
+            resultFraction%unit = 0
+            resultFraction%status = 'Error: Integer Overflow'
+        else        
+            resultFraction = lcd(int(l_num,4), int(l_denom,4))
+        end if
+    end function decimaltofraction
 
     ! This function checks for integer overflow
     ! Using long integers to check for overflow
