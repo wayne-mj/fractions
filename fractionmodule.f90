@@ -303,7 +303,7 @@ module fractionmodule
     end function makemixedFraction
 
     ! This function converts a decimal to a fraction
-    function decimaltofraction(decimal) result(resultFraction)
+    function decimaltofractionapprox(decimal) result(resultFraction)
         real, intent(in) :: decimal
         type(fractiontype) :: resultFraction
         integer(8) :: l_num, l_denom
@@ -325,7 +325,7 @@ module fractionmodule
         else        
             resultFraction = lcd(int(l_num,4), int(l_denom,4))
         end if
-    end function decimaltofraction
+    end function decimaltofractionapprox
 
     ! This function checks for integer overflow
     ! Using long integers to check for overflow
