@@ -4,6 +4,7 @@ module fractionmodule
     !! Define a type to represent a fraction
     type :: fractiontype
         integer :: unit, numerator, denominator
+        integer(8) :: l_numerator, l_denominator
         character(32) :: status
     end type fractiontype
 
@@ -71,6 +72,8 @@ module fractionmodule
             resultFraction%numerator = 0
             resultFraction%denominator = 0
             resultFraction%unit = 0
+            resultFraction%l_numerator = l_num
+            resultFraction%l_denominator = l_denom
             resultFraction%status = 'Error: Integer Overflow'
         else
             resultFraction%numerator = int(l_num)
@@ -136,6 +139,8 @@ module fractionmodule
             resultFraction%numerator = 0
             resultFraction%denominator = 0
             resultFraction%unit = 0
+            resultFraction%l_numerator = l_num
+            resultFraction%l_denominator = l_denom
             resultFraction%status = 'Error: Integer Overflow'
         else
             resultFraction%numerator = int(l_num)
@@ -190,6 +195,8 @@ module fractionmodule
             resultFraction%numerator = 0
             resultFraction%denominator = 0
             resultFraction%unit = 0
+            resultFraction%l_numerator = l_num
+            resultFraction%l_denominator = l_denom
             resultFraction%status = 'Error: Integer Overflow'
         else
             resultFraction%numerator = int(l_num)
@@ -321,6 +328,8 @@ module fractionmodule
             resultFraction%numerator = 0
             resultFraction%denominator = 0
             resultFraction%unit = 0
+            resultFraction%l_numerator = l_num
+            resultFraction%l_denominator = l_denom
             resultFraction%status = 'Error: Integer Overflow'
         else        
             resultFraction = lcd(int(l_num,4), int(l_denom,4))
