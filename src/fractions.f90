@@ -3,7 +3,7 @@ module fractions
   implicit none
   private
 
-  public :: say_hello, maxdenom, fractiontype, add_fraction
+  public :: say_hello, maxdenom, fractiontype, add_fraction, sub_fraction
 
   !! Define a type to represent a fraction
   type :: fractiontype
@@ -21,6 +21,9 @@ module fractions
     module procedure add_fraction_dt, add_fraction_int
   end interface
   
+  interface sub_fraction 
+    module procedure sub_fraction_dt, sub_fraction_int
+  end interface
 
 contains
   subroutine say_hello
@@ -78,9 +81,9 @@ contains
     end if
   end function add_fraction_dt
 
-  !> Add to fractions together using the data type fractiontype
+  !> Add to fractions together using the data type integers and returns datatype
   function add_fraction_int(fn, fd, sn, sd) result(resultFraction)
-    integer                         :: fn, fd, sn, sd
+    integer, intent(in)             :: fn, fd, sn, sd
     type(fractiontype)              :: resultFraction
     integer(int64)                  :: l_num, l_denom 
     logical                         :: overflow
@@ -125,6 +128,101 @@ contains
         resultFraction%status = 'OK'
     end if
   end function add_fraction_int
+
+  !> Subtraction dunction using datatype
+  function sub_fraction_dt(firstFraction, secondFraction) result(resultFraction)
+    type(fractiontype), intent(in)  :: firstFraction, secondFraction
+    type(fractiontype)              :: resultFraction
+    integer(int64)                  :: l_num, l_denom 
+    logical                         :: overflow = .false.
+
+    ! Initialize the variables
+    l_num = 0
+    l_denom = 0
+
+    ! Make sure we are not dividing by zero anywhere
+    if ((firstFraction%denominator .eq. 0) .or. (secondFraction%denominator .eq. 0)) then
+        resultFraction%status = 'Error: Division by zero'
+        return
+    end if
+
+    ! Convert everything to long integers to handle integer overflow
+    ! and perform the calculations
+    if (firstFraction%denominator /= secondFraction%denominator) then
+        l_num = (int(firstFraction%numerator,int64) * int(secondFraction%denominator,int64)) - (int(secondFraction%numerator,int64) * int(firstFraction%denominator,int64))
+        l_denom = int(firstFraction%denominator,int64) * int(secondFraction%denominator,int64)
+    else
+        l_num = int(firstFraction%numerator,int64) - int(secondFraction%numerator,int64)
+        l_denom = int(firstFraction%denominator,int64)
+    end if
+    
+    !Test for Integer Overflow
+    overflow = chkoverflow(l_num) .or. chkoverflow(l_denom)
+
+    ! If there is an overflow, set the result to 0
+    ! Otherwise, set the result to the calculated values
+    if (overflow) then
+        resultFraction%numerator = 0
+        resultFraction%denominator = 0
+        resultFraction%unit = 0
+        resultFraction%l_numerator = l_num
+        resultFraction%l_denominator = l_denom
+        resultFraction%status = 'Error: Integer Overflow'
+    else
+        resultFraction%numerator = int(l_num)
+        resultFraction%denominator = int(l_denom)
+        resultFraction%unit = 0
+        resultFraction%status = 'OK'
+    end if
+  end function sub_fraction_dt
+
+  !> Subtraction using integers and returns datatype
+  function sub_fraction_int(fn, fd, sn, sd) result(resultFraction)
+    integer, intent(in)             :: fn, fd, sn, sd
+    type(fractiontype)              :: resultFraction
+    integer(int64)                  :: l_num, l_denom 
+    logical                         :: overflow = .false.
+
+    ! Initialize the variables
+    l_num = 0
+    l_denom = 0
+
+    ! Make sure we are not dividing by zero anywhere
+    if ((fd .eq. 0) .or. (sd .eq. 0)) then
+        resultFraction%status = 'Error: Division by zero'
+        return
+    end if
+
+    ! Convert everything to long integers to handle integer overflow
+    ! and perform the calculations
+    if (fd /= sd) then
+        l_num = (int(fn,int64) * int(sd,int64)) - (int(sn,int64) * int(fd,int64))
+        l_denom = int(fd,int64) * int(sd,int64)
+    else
+        l_num = int(fn,int64) - int(sn,int64)
+        l_denom = int(fd,int64)
+    end if
+    
+    !Test for Integer Overflow
+    overflow = chkoverflow(l_num) .or. chkoverflow(l_denom)
+
+    ! If there is an overflow, set the result to 0
+    ! Otherwise, set the result to the calculated values
+    if (overflow) then
+        resultFraction%numerator = 0
+        resultFraction%denominator = 0
+        resultFraction%unit = 0
+        resultFraction%l_numerator = l_num
+        resultFraction%l_denominator = l_denom
+        resultFraction%status = 'Error: Integer Overflow'
+    else
+        resultFraction%numerator = int(l_num)
+        resultFraction%denominator = int(l_denom)
+        resultFraction%unit = 0
+        resultFraction%status = 'OK'
+    end if
+  end function sub_fraction_int
+
 
   ! This function checks for integer overflow
   ! Using long integers to check for overflow

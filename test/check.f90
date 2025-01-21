@@ -2,7 +2,7 @@ program check
     use iso_fortran_env
     use fractions
     use VerySimpleTestFramework
-implicit none
+    implicit none
     type(fractiontype)      :: fr, f1, f2
     integer                 :: i
 
@@ -20,6 +20,8 @@ implicit none
     f2%numerator=1
     f2%denominator=3
     
+    ! **** Addition **** !
+    
     fr = add_fraction(f1,f2)
     call test("1/2 + 1/3 = 5/6 Numerator = 5")
     call assert_equals(fr%numerator,5,0)
@@ -36,6 +38,26 @@ implicit none
     call test("1/MAXINT + 2/MAXIT = 3/MAXINT")
     call assert_equals(fr%numerator,3,0)
     call test("1/MAXINT + 2/MAXIT = 3/MAXINT")
+    call assert_equals(fr%denominator,i,0)
+
+    !**** Subtraction **** !
+
+    fr=sub_fraction(f1, f2)
+    call test("1/2 - 1/3 = 1/6")
+    call assert_equals(fr%numerator, 1, 0)
+    call test("1/2 - 1/3 = 1/6")
+    call assert_equals(fr%denominator, 6, 0)
+
+    fr = sub_fraction(1, 3, 1, 4)
+    call test("1/3 - 1/4 =1/12 Numerator = 1")
+    call assert_equals(fr%numerator,1,0)
+    call test("1/3 - 1/4 = 1/12 Denominator = 12")
+    call assert_equals(fr%denominator,12,0)
+    
+    fr=sub_fraction(2, i, 1, i)
+    call test("2/MAXINT - 1/MAXIT = 1/MAXINT")
+    call assert_equals(fr%numerator,1,0)
+    call test("2/MAXINT - 1/MAXIT = 3/MAXINT")
     call assert_equals(fr%denominator,i,0)
 
     call results()
