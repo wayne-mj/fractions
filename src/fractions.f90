@@ -3,7 +3,7 @@ module fractions
   implicit none
   private
 
-  public :: say_hello, maxdenom, fractiontype, add_fraction, sub_fraction, multiply_fraction
+  public :: say_hello, maxdenom, fractiontype, add_fraction, sub_fraction, multiply_fraction, divide_fraction
 
   !! Define a type to represent a fraction
   type :: fractiontype
@@ -27,6 +27,10 @@ module fractions
 
   interface multiply_fraction 
     module procedure multiply_fraction_dt, multiply_fraction_int
+  end interface
+
+  interface divide_fraction 
+    module procedure divide_fraction_dt, divide_fraction_int
   end interface
 
 contains
@@ -306,6 +310,46 @@ contains
         resultFraction%status = 'OK'
     end if
   end function multiply_fraction_int
+
+  !> Division of fractions
+  function divide_fraction_dt(firstFraction, secondFraction) result(resultFraction)
+    type(fractiontype), intent(in)  :: firstFraction, secondFraction
+    type(fractiontype)              :: resultFraction
+    type(fractiontype)              :: tempFraction
+
+    ! If the numerator is zero, then the result will be 
+    ! a divide by zero error
+    if (secondFraction%numerator == 0) then
+        resultFraction%status = 'Error: Division by zero'
+        return
+    end if
+
+    ! Pass it off to the multiply function by swapping the
+    ! numerator and denominator of the second fraction
+    tempFraction%numerator = secondFraction%denominator
+    tempFraction%denominator = secondFraction%numerator
+    resultFraction = multiply_fraction(firstFraction, tempFraction)
+  end function divide_fraction_dt
+
+  !> Division of fractions
+  function divide_fraction_int(fn, fd, sn, sd) result(resultFraction)
+    integer, intent(in)   :: fn, fd, sn, sd
+    type(fractiontype)    :: resultFraction
+    !type(fractiontype)    :: tempFraction
+
+    ! If the numerator is zero, then the result will be 
+    ! a divide by zero error
+    if (sn == 0) then
+        resultFraction%status = 'Error: Division by zero'
+        return
+    end if
+
+    ! Pass it off to the multiply function by swapping the
+    ! numerator and denominator of the second fraction
+    ! tempFraction%numerator = secondFraction%denominator
+    ! tempFraction%denominator = secondFraction%numerator
+    resultFraction = multiply_fraction(fn, fd, sd, sn)
+  end function divide_fraction_int
 
   ! This function checks for integer overflow
   ! Using long integers to check for overflow

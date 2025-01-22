@@ -80,6 +80,26 @@ program check
     call test("1/MAXINT + 2/MAXIT = 2/(MAXINT*MAXINT) AKA Integer Overflow")
     call assert_equals(fr%status,'Error: Integer Overflow')
 
+     ! **** Divide Fraction **** !
+
+    fr = divide_fraction(f1,f2)
+    call test("1/2 / 1/3 = 3/2 Numerator = 3")
+    call assert_equals(fr%numerator,3,0)
+    call test("1/2 / 1/3 = 3/2 Denominator = 2")
+    call assert_equals(fr%denominator,2,0)
+
+    fr = divide_fraction(1, 3, 1, 4)
+    call test("1/3 / 1/4 = 4/3 Numerator = 4")
+    call assert_equals(fr%numerator,4,0)
+    call test("1/3 / 1/4 = 4/3 Denominator = 3")
+    call assert_equals(fr%denominator,3,0)
+
+    fr=divide_fraction(2, i, 1, i)
+    call test("2/MAXINT / 1/MAXIT = 2*MAXINT/MAXINT")
+    call assert_equals(fr%status,'Error: Integer Overflow')
+    call test("2/MAXINT - 1/MAXIT = 2*MAXINT/MAXINT")
+    call assert_equals(fr%status,'Error: Integer Overflow')
+
     call results()
 
 print *, "Put some tests in here!"
