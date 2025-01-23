@@ -13,7 +13,7 @@ program check
     call test("Test of assert pass")
 
     call test("Test that the max denominator is what it is suppose to be 1 * 10^6")
-    call assert_equals(maxdenom, 1*10**6,0)
+    call assert_equals(maxdenom, 1*10**decimalplaces,0)
 
     f1%numerator=1
     f1%denominator=2
@@ -122,6 +122,30 @@ program check
     call test("LCD: 3/2 = 1 1/2")
     call assert_equals(fr%denominator, 2, 0)
 
+    fr = approx_fraction(0.5_real64)
+    call test("Approx Fraction: 0.5 = 1/2")
+    call assert_equals(fr%numerator, 1, 0)
+    call test("Approx Fraction: 0.5 = 1/2")
+    call assert_equals(fr%denominator, 2, 0)
+    
+    fr = approx_fraction(0.75_real64)
+    call test("Approx Fraction: 0.75 = 3/4")
+    call assert_equals(fr%numerator, 3, 0)
+    call test("Approx Fraction: 0.75 = 3/4")
+    call assert_equals(fr%denominator, 4, 0)
+    
+    fr = approx_fraction(0.33333333333_real64)
+    call test("Approx Fraction: 0.33333333333 = 33333333/1000000000")
+    call assert_equals(fr%numerator, 333333333, 0)
+    call test("Approx Fraction: 0.33333333333 = 33333333/1000000000")
+    call assert_equals(fr%denominator, maxdenom, 0)
+
+    fr = approx_fraction(0.125_real64)
+    call test("Approx Fraction: 0.125 = 1/8")
+    call assert_equals(fr%numerator, 1, 0)
+    call test("Approx Fraction: 0.125 = 1/8")
+    call assert_equals(fr%denominator, 8, 0)
+    
     call results()
 
 print *, "Put some tests in here!"
