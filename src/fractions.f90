@@ -3,7 +3,9 @@ module fractions
   implicit none
   private
 
-  public :: say_hello, maxdenom, fractiontype, add_fraction, sub_fraction, multiply_fraction, divide_fraction, lowest_common_denom, mixed_fraction
+  public :: say_hello, maxdenom, fractiontype, decimalplaces, &
+            add_fraction, sub_fraction, multiply_fraction, divide_fraction, &
+            lowest_common_denom, mixed_fraction, approx_fraction
 
   !! Define a type to represent a fraction
   type :: fractiontype
@@ -19,9 +21,15 @@ module fractions
   end type
 
   !! Define known constants
-  integer, parameter :: maxint = huge(0)
-  integer, parameter :: decimalplaces = 6
-  integer, parameter :: maxdenom = 1 * (10 ** decimalplaces)
+  integer, parameter  :: maxint = huge(0)
+  integer, parameter  :: decimalplaces = 9
+  integer, parameter  :: maxdenom = 1 * (10 ** decimalplaces)
+  real, parameter     :: tolerance = 1 * 10**(-decimalplaces)
+
+  !! For DEBUG purposes
+  !! **********************************
+  logical, parameter  :: DBG = .false.
+  !! **********************************
 
   interface add_fraction
     module procedure add_fraction_dt, add_fraction_int
@@ -55,11 +63,13 @@ contains
     print *, my%status, len(my%status)
   end subroutine say_hello
 
+  !> ************************************************************************************************************************** <!
+
   !> Add to fractions together using the data type fractiontype
   function add_fraction_dt(firstFraction, secondFraction) result(resultFraction)
     type(fractiontype), intent(in)  :: firstFraction, secondFraction
     type(fractiontype)              :: resultFraction
-    integer(int64)                         :: l_num, l_denom 
+    integer(int64)                  :: l_num, l_denom 
     logical                         :: overflow
 
     ! Initialize the variables
@@ -151,16 +161,19 @@ contains
     end if
   end function add_fraction_int
 
+  !> ************************************************************************************************************************** <!
+
   !> Subtraction dunction using datatype
   function sub_fraction_dt(firstFraction, secondFraction) result(resultFraction)
     type(fractiontype), intent(in)  :: firstFraction, secondFraction
     type(fractiontype)              :: resultFraction
     integer(int64)                  :: l_num, l_denom 
-    logical                         :: overflow = .false.
+    logical                         :: overflow
 
     ! Initialize the variables
     l_num = 0
     l_denom = 0
+    overflow = .false.
 
     ! Make sure we are not dividing by zero anywhere
     if ((firstFraction%denominator .eq. 0) .or. (secondFraction%denominator .eq. 0)) then
@@ -203,11 +216,12 @@ contains
     integer, intent(in)             :: fn, fd, sn, sd
     type(fractiontype)              :: resultFraction
     integer(int64)                  :: l_num, l_denom 
-    logical                         :: overflow = .false.
+    logical                         :: overflow
 
     ! Initialize the variables
     l_num = 0
     l_denom = 0
+    overflow = .false.
 
     ! Make sure we are not dividing by zero anywhere
     if ((fd .eq. 0) .or. (sd .eq. 0)) then
@@ -245,16 +259,19 @@ contains
     end if
   end function sub_fraction_int
 
+  !> ************************************************************************************************************************** <!
+
   !> Multiply fractions
   function multiply_fraction_dt (firstFraction, secondFraction) result(resultFraction)
     type(fractiontype), intent(in)  :: firstFraction, secondFraction
     type(fractiontype)              :: resultFraction
     integer(int64)                  :: l_num, l_denom 
-    logical                         :: overflow = .false.
+    logical                         :: overflow
 
     ! Initialize the variables
     l_num = 0
     l_denom = 0
+    overflow = .false.
     
     ! Make sure we are not dividing by zero anywhere
     if ((firstFraction%denominator .eq. 0) .or. (secondFraction%denominator .eq. 0)) then
@@ -290,11 +307,12 @@ contains
     integer, intent(in)             :: fn, fd, sn, sd
     type(fractiontype)              :: resultFraction
     integer(int64)                  :: l_num, l_denom 
-    logical                         :: overflow = .false.
+    logical                         :: overflow
 
     ! Initialize the variables
     l_num = 0
     l_denom = 0
+    overflow = .false.
     
     ! Make sure we are not dividing by zero anywhere
     if ((fd .eq. 0) .or. (sd .eq. 0)) then
@@ -325,6 +343,8 @@ contains
     end if
   end function multiply_fraction_int
 
+  !> ************************************************************************************************************************** <!
+
   !> Division of fractions
   function divide_fraction_dt(firstFraction, secondFraction) result(resultFraction)
     type(fractiontype), intent(in)  :: firstFraction, secondFraction
@@ -349,7 +369,6 @@ contains
   function divide_fraction_int(fn, fd, sn, sd) result(resultFraction)
     integer, intent(in)   :: fn, fd, sn, sd
     type(fractiontype)    :: resultFraction
-    !type(fractiontype)    :: tempFraction
 
     ! If the numerator is zero, then the result will be 
     ! a divide by zero error
@@ -362,6 +381,8 @@ contains
     ! numerator and denominator of the second fraction
     resultFraction = multiply_fraction(fn, fd, sd, sn)
   end function divide_fraction_int
+
+  !> ************************************************************************************************************************** <!
 
   !> Lowest Common Denominator
   function lcd(numerator, denominator) result(resultFraction)
@@ -390,6 +411,8 @@ contains
     resultFraction = mixed_fraction_int(num, denum)
   end function lcd
 
+  !> ************************************************************************************************************************** <!
+
   !> Greated Common Denominator
   recursive function GCDfunction (x,y) result(result)
     integer, intent(in) :: x,y
@@ -403,6 +426,8 @@ contains
       result = GCDfunction(y, mod(x,y))
     end if
   end function GCDfunction
+
+  !> ************************************************************************************************************************** <!
 
   !> This function converts a fraction to a mixed number 1 & 3/4 from 7/4
   function mixed_fraction_int (numerator, denominator) result(resultFraction)
@@ -456,6 +481,65 @@ contains
     resultFraction%status = 'OK'
   end function mixed_fraction_dt
 
+  !> ************************************************************************************************************************** <!
+
+  !> This function converts a decimal to an approx fraction
+  function approx_fraction(decimal) result(resultFraction)
+    real(real64), intent(in)    :: decimal
+    type(fractiontype)  :: resultFraction
+    integer(int64)      :: l_num, l_denom
+    integer             :: num, denum
+    logical             :: overflow
+    
+    num = 0
+    denum = 0
+    l_num = 0
+    l_denom = 0
+    overflow = .false.
+
+    l_num = int(decimal * maxdenom, int64)
+    l_denom = maxdenom
+
+    if (DBG) then
+      print *, decimal, l_num, l_denom
+    end if
+
+    !Test for Integer Overflow
+    overflow = chkoverflow(l_num) .or. chkoverflow(l_denom)
+
+    ! If there is an overflow, set the result to 0
+    ! Otherwise, set the result to the calculated values
+    if (overflow) then
+      resultFraction%numerator = 0
+      resultFraction%denominator = 0
+      resultFraction%unit = 0
+      resultFraction%l_numerator = l_num
+      resultFraction%l_denominator = l_denom
+      resultFraction%status = 'Error: Integer Overflow'
+    else
+      num = int(l_num, int32)
+      denum = int(l_denom, int32)
+      resultFraction = lcd(num,denum)!(int(l_num, int32), int(l_denom, int32))
+    end if
+  end function approx_fraction
+  
+  !> ************************************************************************************************************************** <!
+
+  ! function guess_fraction(decimal) result(rf)
+  !   real(real32), intent(in)    :: decimal 
+  !   type(fractiontype)  :: rf, tf 
+  !   integer(int64)      :: l_num, l_denom 
+  !   logical             :: overflow 
+
+  !   overflow = .false.
+  !   tf = approx_fraction(decimal)
+  !   l_num = int(tf%numerator,int64)
+  !   l_denom = int(tf%denominator, int64)
+
+  ! end function guess_fraction
+
+  !> ************************************************************************************************************************** <!
+
   !> This function checks for integer overflow
   !> Using long integers to check for overflow
   function chkoverflow (testInteger) result(bool)
@@ -473,5 +557,7 @@ contains
       return
     end if
   end function chkoverflow
+
+  !> ************************************************************************************************************************** <!
 
 end module fractions
