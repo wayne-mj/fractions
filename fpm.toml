@@ -4,6 +4,7 @@ license = "MIT"
 author = "Wayne.MJ"
 maintainer = "150761502+wayne-mj@users.noreply.github.com"
 copyright = "Copyright 2025, Wayne.MJ"
+description = "Fraction helper functions"
 [build]
 auto-executables = true
 auto-tests = true

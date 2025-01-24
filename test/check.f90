@@ -12,7 +12,7 @@ program check
     call suite("Begin tests of Fraction functions")
     call test("Test of assert pass")
 
-    call test("Test that the max denominator is what it is suppose to be 1 * 10^6")
+    call test("Test that the max denominator is what it is suppose to be 1 * 10^9")
     call assert_equals(maxdenom, 1*10**decimalplaces,0)
 
     f1%numerator=1
@@ -139,6 +139,12 @@ program check
     call assert_equals(fr%numerator, 333333333, 0)
     call test("Approx Fraction: 0.33333333333 = 33333333/1000000000")
     call assert_equals(fr%denominator, maxdenom, 0)
+
+    fr = approx_fraction(0.16666667_real64)
+    call test("Approx Fraction: 0.16666667 = 16666667/100000000")
+    call assert_equals(fr%numerator, 16666667, 0)
+    call test("Approx Fraction: 0.16666667 = 16666667/100000000")
+    call assert_equals(fr%denominator, 100000000, 0)
 
     fr = approx_fraction(0.125_real64)
     call test("Approx Fraction: 0.125 = 1/8")
