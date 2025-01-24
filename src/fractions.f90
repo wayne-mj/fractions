@@ -3,7 +3,7 @@ module fractions
   implicit none
   private
 
-  public :: say_hello, maxdenom, fractiontype, decimalplaces, &
+  public :: maxdenom, fractiontype, decimalplaces, &
             add_fraction, sub_fraction, multiply_fraction, divide_fraction, &
             lowest_common_denom, mixed_fraction, approx_fraction
 
@@ -56,13 +56,7 @@ module fractions
   end interface
 
 contains
-  subroutine say_hello
-    type(fractiontype) :: my
-
-    my%status = "Hello World"
-    print *, my%status, len(my%status)
-  end subroutine say_hello
-
+  
   !> ************************************************************************************************************************** <!
 
   !> Add to fractions together using the data type fractiontype
@@ -486,10 +480,10 @@ contains
   !> This function converts a decimal to an approx fraction
   function approx_fraction(decimal) result(resultFraction)
     real(real64), intent(in)    :: decimal
-    type(fractiontype)  :: resultFraction
-    integer(int64)      :: l_num, l_denom
-    integer             :: num, denum
-    logical             :: overflow
+    type(fractiontype)          :: resultFraction
+    integer(int64)              :: l_num, l_denom
+    integer                     :: num, denum
+    logical                     :: overflow
     
     num = 0
     denum = 0
