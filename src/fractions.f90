@@ -59,6 +59,29 @@ contains
   
   !> ************************************************************************************************************************** <!
 
+  !> Process the overflow or return the integer
+  subroutine overflow_process(rf, of, ln, ld)
+    type(fractiontype), intent(inout)     :: rf
+    logical, intent(in)                   :: of
+    integer(int64), intent(in)            :: ln, ld
+    
+    if (of) then
+      rf%numerator = 0
+      rf%denominator = 0
+      rf%unit = 0
+      rf%l_numerator = ln
+      rf%l_denominator = ld
+      rf%status = 'Error: Integer Overflow'
+    else
+      rf%numerator = int(ln)
+      rf%denominator = int(ld)
+      rf%unit = 0
+      rf%status = 'OK'
+    end if
+  end subroutine
+
+  !> ************************************************************************************************************************** <!
+
   !> Add to fractions together using the data type fractiontype
   function add_fraction_dt(firstFraction, secondFraction) result(resultFraction)
     type(fractiontype), intent(in)  :: firstFraction, secondFraction
@@ -92,19 +115,7 @@ contains
 
     ! If there is an overflow, set the result to 0
     ! Otherwise, set the result to the calculated values
-    if (overflow) then
-      resultFraction%numerator = 0
-      resultFraction%denominator = 0
-      resultFraction%unit = 0
-      resultFraction%l_numerator = l_num
-      resultFraction%l_denominator = l_denom
-      resultFraction%status = 'Error: Integer Overflow'
-    else
-      resultFraction%numerator = int(l_num)
-      resultFraction%denominator = int(l_denom)
-      resultFraction%unit = 0
-      resultFraction%status = 'OK'
-    end if
+    call overflow_process(resultFraction, overflow, l_num, l_denom)
   end function add_fraction_dt
 
   !> Add to fractions together using the data type integers and returns datatype
@@ -140,19 +151,7 @@ contains
 
     ! If there is an overflow, set the result to 0
     ! Otherwise, set the result to the calculated values
-    if (overflow) then
-      resultFraction%numerator = 0
-      resultFraction%denominator = 0
-      resultFraction%unit = 0
-      resultFraction%l_numerator = l_num
-      resultFraction%l_denominator = l_denom
-      resultFraction%status = 'Error: Integer Overflow'
-    else
-      resultFraction%numerator = int(l_num)
-      resultFraction%denominator = int(l_denom)
-      resultFraction%unit = 0
-      resultFraction%status = 'OK'
-    end if
+    call overflow_process(resultFraction, overflow, l_num, l_denom)
   end function add_fraction_int
 
   !> ************************************************************************************************************************** <!
@@ -190,19 +189,7 @@ contains
 
     ! If there is an overflow, set the result to 0
     ! Otherwise, set the result to the calculated values
-    if (overflow) then
-      resultFraction%numerator = 0
-      resultFraction%denominator = 0
-      resultFraction%unit = 0
-      resultFraction%l_numerator = l_num
-      resultFraction%l_denominator = l_denom
-      resultFraction%status = 'Error: Integer Overflow'
-    else
-      resultFraction%numerator = int(l_num)
-      resultFraction%denominator = int(l_denom)
-      resultFraction%unit = 0
-      resultFraction%status = 'OK'
-    end if
+    call overflow_process(resultFraction, overflow, l_num, l_denom)
   end function sub_fraction_dt
 
   !> Subtraction using integers and returns datatype
@@ -238,19 +225,7 @@ contains
 
     ! If there is an overflow, set the result to 0
     ! Otherwise, set the result to the calculated values
-    if (overflow) then
-      resultFraction%numerator = 0
-      resultFraction%denominator = 0
-      resultFraction%unit = 0
-      resultFraction%l_numerator = l_num
-      resultFraction%l_denominator = l_denom
-      resultFraction%status = 'Error: Integer Overflow'
-    else
-      resultFraction%numerator = int(l_num)
-      resultFraction%denominator = int(l_denom)
-      resultFraction%unit = 0
-      resultFraction%status = 'OK'
-    end if
+    call overflow_process(resultFraction, overflow, l_num, l_denom)
   end function sub_fraction_int
 
   !> ************************************************************************************************************************** <!
@@ -281,19 +256,7 @@ contains
 
     ! If there is an overflow, set the result to 0
     ! Otherwise, set the result to the calculated values
-    if (overflow) then
-      resultFraction%numerator = 0
-      resultFraction%denominator = 0
-      resultFraction%unit = 0
-      resultFraction%l_numerator = l_num
-      resultFraction%l_denominator = l_denom
-      resultFraction%status = 'Error: Integer Overflow'
-    else
-      resultFraction%numerator = int(l_num)
-      resultFraction%denominator = int(l_denom)
-      resultFraction%unit = 0
-      resultFraction%status = 'OK'
-    end if
+    call overflow_process(resultFraction, overflow, l_num, l_denom)
   end function multiply_fraction_dt
 
   !> Multiply fractions
@@ -322,19 +285,7 @@ contains
 
     ! If there is an overflow, set the result to 0
     ! Otherwise, set the result to the calculated values
-    if (overflow) then
-      resultFraction%numerator = 0
-      resultFraction%denominator = 0
-      resultFraction%unit = 0
-      resultFraction%l_numerator = l_num
-      resultFraction%l_denominator = l_denom
-      resultFraction%status = 'Error: Integer Overflow'
-    else
-      resultFraction%numerator = int(l_num)
-      resultFraction%denominator = int(l_denom)
-      resultFraction%unit = 0
-      resultFraction%status = 'OK'
-    end if
+    call overflow_process(resultFraction, overflow, l_num, l_denom)
   end function multiply_fraction_int
 
   !> ************************************************************************************************************************** <!
@@ -407,7 +358,7 @@ contains
 
   !> ************************************************************************************************************************** <!
 
-  !> Greated Common Denominator
+  !> Greatest Common Denominator
   recursive function GCDfunction (x,y) result(result)
     integer, intent(in) :: x,y
     integer             :: result

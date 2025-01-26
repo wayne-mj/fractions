@@ -154,5 +154,5 @@ program check
     
     call results()
 
-print *, "Put some tests in here!"
+! print *, "Put some tests in here!"
 end program check
