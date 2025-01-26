@@ -23,10 +23,12 @@ The first was using [Fortran Package Manager](https://fpm.fortran-lang.org/index
 - approx_fraction - Creates an approximate fraction from a decimal digit.
 
 ## Public constants and datatypes
+
 - maxdenom - 1 * 10 ** 9.
 - fractiontype - A datatype that represents a fraction: unit & numerator / denominator both as 32 and 64bit integer including a status message.
 - decimalpaces - The number of decimal places used to convert a decimal number to a fraction.
 
 ## Private functions
+
 - GCDfunction - Worker for the above function.
 - chkoverflow - Checks for integer overflow by using long integer.
