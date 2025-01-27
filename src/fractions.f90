@@ -82,6 +82,38 @@ contains
 
   !> ************************************************************************************************************************** <!
 
+  !> Crossmultiply the addition is the denominators are different otherwise add the fractions
+  subroutine crossmultiply_addition(fn, fd, sn, sd, ln, ld)
+    integer, intent(in)             :: fn, fd, sn, sd 
+    integer(int64), intent(inout)   :: ln, ld
+
+    if (fd .ne. sd) then
+      ln = (int(fn,KIND=int64) * int(sd,kind=int64)) + (int(sn,kind=int64) * int(fd,kind=int64))
+      ld = int(fd,kind=int64) * int(sd,kind=int64)
+    else
+      ln = int(fn,kind=int64) + int(sn,kind=int64)
+      ld = int(fd,kind=int64)
+    end if
+  end subroutine
+
+  !> ************************************************************************************************************************** <!
+
+  !> Crossmultiply the addition is the denominators are different otherwise add the fractions
+  subroutine crossmultiply_subtraction(fn, fd, sn, sd, ln, ld)
+    integer, intent(in)             :: fn, fd, sn, sd 
+    integer(int64), intent(inout)   :: ln, ld
+
+    if (fd .ne. sd) then
+      ln = (int(fn,KIND=int64) * int(sd,kind=int64)) - (int(sn,kind=int64) * int(fd,kind=int64))
+      ld = int(fd,kind=int64) * int(sd,kind=int64)
+    else
+      ln = int(fn,kind=int64) - int(sn,kind=int64)
+      ld = int(fd,kind=int64)
+    end if
+  end subroutine
+
+  !> ************************************************************************************************************************** <!
+
   !> Add to fractions together using the data type fractiontype
   function add_fraction_dt(firstFraction, secondFraction) result(resultFraction)
     type(fractiontype), intent(in)  :: firstFraction, secondFraction
@@ -102,13 +134,7 @@ contains
 
     ! Convert everything to long integers to handle integer overflow
     ! and perform the calculations
-    if (firstFraction%denominator .ne. secondFraction%denominator) then
-      l_num = (int(firstFraction%numerator,KIND=int64) * int(secondFraction%denominator,kind=int64)) + (int(secondFraction%numerator,kind=int64) * int(firstFraction%denominator,kind=int64))
-      l_denom = int(firstFraction%denominator,kind=int64) * int(secondFraction%denominator,kind=int64)
-    else
-      l_num = int(firstFraction%numerator,kind=int64) + int(secondFraction%numerator,kind=int64)
-      l_denom = int(firstFraction%denominator,kind=int64)
-    end if
+    call crossmultiply_addition(firstFraction%numerator, firstFraction%denominator, secondFraction%numerator, secondFraction%denominator, l_num, l_denom)
 
     !Test for Integer Overflow
     overflow = chkoverflow(l_num) .or. chkoverflow(l_denom)
@@ -138,13 +164,7 @@ contains
 
     ! Convert everything to long integers to handle integer overflow
     ! and perform the calculations
-    if (fd .ne. sd) then
-      l_num = (int(fn,KIND=int64) * int(sd,kind=int64)) + (int(sn,kind=int64) * int(fd,kind=int64))
-      l_denom = int(fd,kind=int64) * int(sd,kind=int64)
-    else
-      l_num = int(fn,kind=int64) + int(sn,kind=int64)
-      l_denom = int(fd,kind=int64)
-    end if
+    call crossmultiply_addition(fn, fd, sn, sd, l_num, l_denom)
 
     !Test for Integer Overflow
     overflow = chkoverflow(l_num) .or. chkoverflow(l_denom)
@@ -176,13 +196,7 @@ contains
 
     ! Convert everything to long integers to handle integer overflow
     ! and perform the calculations
-    if (firstFraction%denominator .ne. secondFraction%denominator) then
-      l_num = (int(firstFraction%numerator,int64) * int(secondFraction%denominator,int64)) - (int(secondFraction%numerator,int64) * int(firstFraction%denominator,int64))
-      l_denom = int(firstFraction%denominator,int64) * int(secondFraction%denominator,int64)
-    else
-      l_num = int(firstFraction%numerator,int64) - int(secondFraction%numerator,int64)
-      l_denom = int(firstFraction%denominator,int64)
-    end if
+    call crossmultiply_subtraction(firstFraction%numerator, firstFraction%denominator, secondFraction%numerator, secondFraction%denominator, l_num, l_denom)
     
     !Test for Integer Overflow
     overflow = chkoverflow(l_num) .or. chkoverflow(l_denom)
@@ -212,13 +226,7 @@ contains
 
     ! Convert everything to long integers to handle integer overflow
     ! and perform the calculations
-    if (fd .ne. sd) then
-      l_num = (int(fn,int64) * int(sd,int64)) - (int(sn,int64) * int(fd,int64))
-      l_denom = int(fd,int64) * int(sd,int64)
-    else
-      l_num = int(fn,int64) - int(sn,int64)
-      l_denom = int(fd,int64)
-    end if
+    call crossmultiply_subtraction(fn,fd,sn,sd,l_num,l_denom)
     
     !Test for Integer Overflow
     overflow = chkoverflow(l_num) .or. chkoverflow(l_denom)

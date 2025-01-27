@@ -23,9 +23,9 @@ program check
     ! **** Addition **** !
     
     fr = add_fraction(f1,f2)
-    call test("1/2 + 1/3 = 5/6 Numerator = 5")
+    call test("Fraction Model: 1/2 + 1/3 = 5/6 Numerator = 5")
     call assert_equals(fr%numerator,5,0)
-    call test("1/2 + 1/3 = 5/6 Denominator = 6")
+    call test("Fraction Model: 1/2 + 1/3 = 5/6 Denominator = 6")
     call assert_equals(fr%denominator,6,0)
 
     fr = add_fraction(1, 3, 1, 4)
@@ -43,9 +43,9 @@ program check
     ! **** Subtraction **** !
 
     fr=sub_fraction(f1, f2)
-    call test("1/2 - 1/3 = 1/6")
+    call test("Fraction Model: 1/2 - 1/3 = 1/6")
     call assert_equals(fr%numerator, 1, 0)
-    call test("1/2 - 1/3 = 1/6")
+    call test("Fraction Model: 1/2 - 1/3 = 1/6")
     call assert_equals(fr%denominator, 6, 0)
 
     fr = sub_fraction(1, 3, 1, 4)
@@ -63,9 +63,9 @@ program check
     ! **** Multiply Fraction **** !
 
     fr = multiply_fraction(f1,f2)
-    call test("1/2 * 1/3 = 1/6 Numerator = 1")
+    call test("Fraction Model: 1/2 * 1/3 = 1/6 Numerator = 1")
     call assert_equals(fr%numerator,1,0)
-    call test("1/2 * 1/3 = 1/6 Denominator = 6")
+    call test("Fraction Model: 1/2 * 1/3 = 1/6 Denominator = 6")
     call assert_equals(fr%denominator,6,0)
 
     fr = multiply_fraction(1, 3, 1, 4)
@@ -83,9 +83,9 @@ program check
      ! **** Divide Fraction **** !
 
     fr = divide_fraction(f1,f2)
-    call test("1/2 / 1/3 = 3/2 Numerator = 3")
+    call test("Fraction Model: 1/2 / 1/3 = 3/2 Numerator = 3")
     call assert_equals(fr%numerator,3,0)
-    call test("1/2 / 1/3 = 3/2 Denominator = 2")
+    call test("Fraction Model: 1/2 / 1/3 = 3/2 Denominator = 2")
     call assert_equals(fr%denominator,2,0)
 
     fr = divide_fraction(1, 3, 1, 4)
