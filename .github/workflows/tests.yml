@@ -11,7 +11,7 @@ jobs:
               uses: actions/checkout@v4
 
             - name: Setup latest Fortran Package mananger
-              uses: fortran-lang/setup-fpm@v6.1.0
+              uses: fortran-lang/setup-fpm@v5
             
             - name: Run test
               run: fpm test
