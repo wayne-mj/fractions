@@ -10,8 +10,10 @@ jobs:
             - name: Checkout repo
               uses: actions/checkout@v4
 
-            - name: Setup latest Fortran Package mananger
-              uses: fortran-lang/setup-fpm@v6.1.0
+            #- name: Setup latest Fortran Package mananger
+            #  uses: fortran-lang/setup-fpm@v5
+            - name: Install fpm by python
+              run: pip install fpm
             
             - name: Run test
               run: fpm test
