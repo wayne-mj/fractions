@@ -1,0 +1,17 @@
+name: Run test
+
+on: 
+    workflow_dispatch:
+
+jobs:
+    setup-fpm:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout repo
+              uses: actions/checkout@v4
+
+            - name: Setup latest Fortran Package mananger
+              uses: fortran-lang/setup-fpm@v6.1.0
+            
+            - name: Run test
+              run: fpm test
