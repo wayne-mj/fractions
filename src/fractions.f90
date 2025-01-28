@@ -134,7 +134,8 @@ contains
 
     ! Convert everything to long integers to handle integer overflow
     ! and perform the calculations
-    call crossmultiply_addition(firstFraction%numerator, firstFraction%denominator, secondFraction%numerator, secondFraction%denominator, l_num, l_denom)
+    call crossmultiply_addition(firstFraction%numerator, firstFraction%denominator, &
+    secondFraction%numerator, secondFraction%denominator, l_num, l_denom)
 
     !Test for Integer Overflow
     overflow = chkoverflow(l_num) .or. chkoverflow(l_denom)
@@ -196,7 +197,8 @@ contains
 
     ! Convert everything to long integers to handle integer overflow
     ! and perform the calculations
-    call crossmultiply_subtraction(firstFraction%numerator, firstFraction%denominator, secondFraction%numerator, secondFraction%denominator, l_num, l_denom)
+    call crossmultiply_subtraction(firstFraction%numerator, firstFraction%denominator, &
+    secondFraction%numerator, secondFraction%denominator, l_num, l_denom)
     
     !Test for Integer Overflow
     overflow = chkoverflow(l_num) .or. chkoverflow(l_denom)
