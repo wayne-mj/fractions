@@ -308,7 +308,7 @@ contains
 
     ! If the numerator is zero, then the result will be 
     ! a divide by zero error
-    if (secondFraction%numerator .eq. 0) then
+    if ((firstFraction%denominator .eq. 0) .or. (secondFraction%numerator .eq. 0)) then
       resultFraction%status = 'Error: Division by zero'
       return
     end if
@@ -327,7 +327,7 @@ contains
 
     ! If the numerator is zero, then the result will be 
     ! a divide by zero error
-    if (sn .eq. 0) then
+    if ((fd .eq. 0) .or. (sn .eq. 0)) then
       resultFraction%status = 'Error: Division by zero'
       return
     end if
